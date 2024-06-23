@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>ClArTTS</title>
+      <!-- <link rel="stylesheet" href="clartts_assets/style.css"> -->
+      <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      <script>
+         $(document).ready(function() {
+             $("#synthesize-button").click(function() {
+                 // Get the text to synthesize from the input field
+                 var text = $("#text-input").val();
+                 if (text == ""){
+                   return;
+                 }
+         
+                 // Send an AJAX request to the Flask API to synthesize the text
+                 $.ajax({
+                     type: "POST",
+                     contentType: "application/json;charset=utf-8",
+                     url: "",
+                     responseType:"audio/wav",
+                     data: JSON.stringify({text: text}),
+         
+                     beforeSend: function(){
+                       $('.loading').css("visibility", "visible");
+                       $('#generatedAudio').css("visibility", "hidden");
+                       $("#synthesize-button").prop("disabled", true);
+         
+                     },
+         
+                     success: function(response) {
+                         $('.loading').css("visibility", "hidden");
+                         $('#generatedAudio').attr("src", "data:audio/wav;base64, "+response);
+                         $('#generatedAudio').css("visibility", "visible");
+                         $("#synthesize-button").prop("disabled", false);
+                     },
+                     error: function(XMLHttpRequest, textStatus, errorThrown){
+                        console.log(errorThrown);
+                       $('.loading').css("visibility", "hidden");
+                       alert('Some error occured. Maybe due to invalid text entered. Try again with some other Arabic text.')
+                         $("#synthesize-button").prop("disabled", false);
+                     }
+                 })
+             });
+         });
+      </script>
+      <style>
+         .audio-sample-label {margin-top: 15px;}
+         .btnmarg {margin-top: 15px;}
+         .txtHeight {height: 150px !important;
+            text-align: right;
+         }
+         .h1{
+            color: rgb(0, 102, 204);
+         }
+
+         h2{
+            color: rgb(0, 51, 204);
+         }
+         p{
+            text-align: justify;
+
+         }
+         body{
+            font-size: large;
+         }
+         .loading{
+            visibility: hidden;
+         }
+         #generatedAudio{
+            visibility: hidden;
+         }
+
+         
+      </style>
+
+   </head>
+
+   <body>
+      <div class="wrapper container">
+         <!-- Abstract  -->
+         <div class="abstract ">
+            <h1 class="h1">
+               ClArTTS: An Open-Source Classical Arabic Text-to-Speech Dataset
+            </h1>
+            <h2>
+               Abstract
+            </h2>
+            <p>
+               At present, Text-to-speech (TTS) systems that are trained
+               with high-quality transcribed speech data using end-to-end neural 
+               models can generate speech that is intelligible, natural, and
+               closely resembles human speech. These models are trained with
+               relatively large single-speaker professionally recorded audio,
+               typically extracted from audiobooks. Meanwhile, due to the
+               scarcity of freely available speech corpora of this kind, a larger
+               gap exists in Arabic TTS research and development. Most of the
+               existing freely available Arabic speech corpora are not suitable
+               for TTS training as they contain multi-speaker casual speech
+               with variations in recording conditions and quality, whereas the
+               corpus curated for speech synthesis are generally small in size
+               and not suitable for training state-of-the-art end-to-end models.
+               In a move towards filling this gap in resources, we present a
+               speech corpus for Classical Arabic Text-to-Speech (ClArTTS)
+               to support the development of end-to-end TTS systems for Arabic. 
+               The speech is extracted from a LibriVox audiobook, which
+               is then processed, segmented, and manually transcribed and annotated. 
+               The final ClArTTS corpus contains about 12 hours of
+               speech from a single male speaker sampled at 40100 Hz.
+            </p>
+         </div>
+         <!-- MOS Samples -->
+         <h2>Examples from Mean Opinion Score (MOS) evaluation:</h2>
+         <p>                Note: We have trained *-ASC models on the Arabic speech corpus which is single speaker
+            Arabic TTS dataset, and *-ClArTTS models are trained on the presented ClArTTS corpus. For
+            MOS score evaluation, we used a test set from both the Arabic speech corpus and the ClArTTS.
+         </p>
+         <div class="mos">
+            <div class="row audio-sample-texts">
+               <div class="audio-sample-text col-sm-2 col-md-2 col-lg-2">
+                  <b>Text</b>
+               </div>
+               <div class="audio-sample-text col-sm-3 col-md-3 col-lg-3">
+                  <p>
+                     .لَمَّا أَكَلَا مِنْ الشَّجَرَةِ الَّتِي نُهِيَا عَنْهَا
+                  </p>
+               </div>
+               <div class="audio-sample-text col-sm-3 col-md-3 col-lg-3">
+                  <p>
+                  .بَدَتْ لَهُمَا سَوْآتُهُمَا .وَطَفِقَا يَخْصِفَانِ عَلَيْهِمَا مِنْ وَرَقِ الْجَنَّةِ                 
+                  </p>
+               </div>
+               <div class="audio-sample-text col-sm-3 col-md-3 col-lg-3">
+                  <p>
+                    .تَنْبِيهًا .لِعُقُولِهِمَا .فِي سَتْرِ مَا رَأَيَاهُ مُسْتَقْبَحًا مِنْ سَوْآتِهِمَا
+                  </p>
+               </div>
+            </div>
+            <div class="row audio-samples border">
+               <div class="audio-sample-label col-sm-2 col-md-2 col-lg-2">
+                  <p>Ground Truth</p>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/groundtruth/200.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/groundtruth/201.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/groundtruth/202.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+            </div>
+            <div class="row audio-samples">
+               <div class="col-sm-2 col-md-2 col-lg-2 audio-sample-label ">
+                  <p>GradTTS-ClArTTS</p>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_clard/200.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_clard/201.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_clard/202.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+            </div>
+            <div class="row audio-samples">
+               <div class="audio-sample-label col-sm-2 col-md-2 col-lg-2">
+                  <p>GlowTTS-ClArTTS</p>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_clard/200.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_clard/201.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_clard/202.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+            </div>
+            <div class="row audio-samples">
+               <div class="audio-sample-label col-sm-2 col-md-2 col-lg-2">
+                  <p>GradTTS-ASC</p>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_asc/200.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_asc/201.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_grad_asc/202.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+            </div>
+            <div class="row audio-samples">
+               <div class="audio-sample-label col-sm-2 col-md-2 col-lg-2">
+                  <p>GlowTTS-ASC</p>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_asc/200.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_asc/201.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+               <div class="audio-sample col-sm-3 col-md-3 col-lg-3">
+                  <audio controls>
+                     <source src="clartts_assets/audio/demo_glow_asc/202.wav" type="audio/mpeg">
+                     Your browser does not support the audio element.
+                  </audio>
+               </div>
+            </div>
+         </div>
+         <!-- Note -->
+         <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+               <p>
+                  <b>Note:</b> <a href="https://github.com/jik876/hifi-gan"> HiFi-GAN </a> is used as a vocoder. Also, listen to the audio using headphones for a better
+                  experience. We explicitly trained the HiFi-GAN vocoder on ClArTTS with a sampling rate of
+                  40100 Hz.
+               </p>
+            </div>
+         </div>
+         <!-- Access to corpus -->
+         <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+               <h2>Access to ClArTTS corpus:</h2>
+               <p>
+                  ClArTTS can be accesed through <a href="https://huggingface.co/datasets/AtharvA7k/ClArTTS"> Huggingface datasets</a>
+               </p>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
